@@ -3,13 +3,73 @@ package main
 import (
 	"fmt"
 	"math"
+	"sort"
 	"strconv"
 )
 
 func main() {
-	FindUnPairedElement([]int{9, 3, 9, 3, 9, 7, 9})
+	SortedSquares([]int{-5, -3, -2, -1})
 }
 
+func SortedSquares(nums []int) []int {
+	length := len(nums)
+	firstPointer := 0
+	secondPointer := length - 1
+	output := make([]int, length)
+	counter := length - 1
+
+	for firstPointer <= secondPointer {
+		firstSquare := nums[firstPointer] * nums[firstPointer]
+		secondSquare := nums[secondPointer] * nums[secondPointer]
+
+		if firstSquare > secondSquare {
+			output[counter] = firstSquare
+			firstPointer++
+		} else {
+			output[counter] = secondSquare
+			secondPointer--
+		}
+		counter--
+	}
+
+	return output
+
+}
+
+func ThreeSum(nums []int) [][]int {
+	result := make([][]int, 0)
+	sort.Ints(nums)
+
+	for index, value := range nums {
+		if index > 0 && value == nums[index-1] {
+			continue
+		}
+
+		leftPointer, rightPointer := index+1, len(nums)-1
+
+		for leftPointer < rightPointer {
+			threeSum := value + nums[leftPointer] + nums[rightPointer]
+
+			if threeSum > 0 {
+				rightPointer--
+			} else if threeSum < 0 {
+				leftPointer++
+			} else {
+				newArray := []int{value, nums[leftPointer], nums[rightPointer]}
+				result = append(result, newArray)
+				leftPointer++
+
+				for nums[leftPointer] == nums[leftPointer-1] && leftPointer < rightPointer {
+					leftPointer += 1
+				}
+
+			}
+
+		}
+	}
+
+	return result
+}
 func PrintTriangle(n int) {
 	for i := 1; i <= n; i++ {
 		for value := 0; value < i; value++ {
@@ -81,6 +141,25 @@ func FindUnPairedElement(A []int) int {
 	}
 
 	return arrayValue
+}
+
+func ContainsDuplicate(nums []int) bool {
+	length := len(nums)
+	response := false
+	if length < 1 || length > int(math.Pow(float64(10), float64(5))) {
+		return false
+	}
+
+	dictionary := make(map[int]int, 0)
+	for _, value := range nums {
+		dictionaryValue := dictionary[value]
+		if dictionaryValue > 0 {
+			response = true
+			return response
+		}
+		dictionary[value]++
+	}
+	return response
 }
 
 func RotateNTimes(A []int, K int) []int {
