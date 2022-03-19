@@ -2,13 +2,14 @@ package main
 
 import (
 	"fmt"
+	"github.com/dontunee/algorithmInGo/techniques"
 	"math"
 	"sort"
 	"strconv"
 )
 
 func main() {
-	SortedSquares([]int{-5, -3, -2, -1})
+	techniques.FindAnagrams("baa", "aa")
 }
 
 func SortedSquares(nums []int) []int {

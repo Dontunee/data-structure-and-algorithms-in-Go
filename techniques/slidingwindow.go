@@ -2,8 +2,69 @@ package techniques
 
 import (
 	"math"
+	"reflect"
 )
 
+func FindAnagrams(s string, p string) []int {
+	result := make([]int, 0)
+	pArray := []rune(p)
+	sArray := []rune(s)
+	pMap := make(map[rune]int, 0)
+	customMap := make(map[rune]int, 0)
+	left := 0
+	right := 0
+	pCount := 0
+	length := len(pArray)
+
+	for _, val := range pArray {
+		pMap[val]++
+	}
+
+	for right <= len(sArray) {
+		if pCount == length {
+			if reflect.DeepEqual(pMap, customMap) {
+				result = append(result, left)
+			}
+			if customMap[sArray[left]] > 1 {
+				customMap[sArray[left]] -= 1
+			} else if customMap[sArray[left]] == 1 {
+				delete(customMap, sArray[left])
+			}
+			left += 1
+			pCount -= 1
+		}
+
+		if right < len(sArray) {
+			customMap[sArray[right]]++
+		}
+		right++
+		pCount++
+	}
+	return result
+}
+
+func MaxSubArray(nums []int) int {
+	maximumSum := math.MinInt64
+	currentSum := 0
+	windowStart := 0
+
+	for windowEnd := 0; windowEnd < len(nums); windowEnd++ {
+		currentSum += nums[windowEnd]
+
+		if currentSum < 0 {
+			maximumSum = int(math.Max(float64(currentSum), float64(maximumSum)))
+			currentSum -= nums[windowStart]
+			windowStart++
+		} else if nums[windowEnd] > currentSum {
+			currentSum = nums[windowEnd]
+		} else {
+			maximumSum = int(math.Max(float64(currentSum), float64(maximumSum)))
+		}
+
+	}
+
+	return maximumSum
+}
 func BruteForceAverageOfKSubArray(input []int, k int) []float32 {
 	var solution []float32
 	var length int = len(input)
