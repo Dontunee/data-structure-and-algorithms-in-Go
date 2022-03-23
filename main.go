@@ -2,14 +2,18 @@ package main
 
 import (
 	"fmt"
-	"github.com/dontunee/algorithmInGo/techniques"
+	"github.com/dontunee/algorithmInGo/dataStructure"
 	"math"
 	"sort"
 	"strconv"
 )
 
 func main() {
-	techniques.FindAnagrams("baa", "aa")
+	dataStructure.Put(6, "A")
+	dataStructure.Put(8, "B")
+	dataStructure.Put(11, "C")
+	dataStructure.Put(6, "A+")
+	dataStructure.Remove(11)
 }
 
 func SortedSquares(nums []int) []int {
