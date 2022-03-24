@@ -2,20 +2,30 @@ package main
 
 import (
 	"fmt"
-	"github.com/dontunee/algorithmInGo/dataStructure"
+	"github.com/dontunee/algorithmInGo/blind75"
 	"math"
 	"sort"
 	"strconv"
 )
 
 func main() {
-	dataStructure.Put(6, "A")
-	dataStructure.Put(8, "B")
-	dataStructure.Put(11, "C")
-	dataStructure.Put(6, "A+")
-	dataStructure.Remove(11)
+	blind75.TwoSum([]int{2, 7, 11, 15}, 9)
 }
 
+func plusOne(digits []int) []int {
+	length := len(digits)
+	for i := length - 1; i >= 0; i++ {
+		if digits[i] < 9 {
+			digits[i]++
+			return digits
+		}
+		digits[i] = 0
+	}
+
+	result := make([]int, length+1)
+	result[0] = 1
+	return result
+}
 func SortedSquares(nums []int) []int {
 	length := len(nums)
 	firstPointer := 0

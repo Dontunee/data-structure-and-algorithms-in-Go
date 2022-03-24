@@ -24,6 +24,15 @@ linkedlist<entry>[]
 {ll,ll,ll,ll}
 */
 
+/*2 keys with the same function
+
+1 way)Chaining: each cell pointed to a linked list, if there is a collision add to end of list
+e.g array of 5 spaces , hash index value of 6 aand 11 leads to index 1 , store in linked list
+2 way )Open addressing: find different slot for the second value
+Probing ,1)Linear Probing : check each next slot for space _. hash(key) + i % table size until we find an empty slot
+2) Quadratic Probing : hash(key) + (i * i) % table size , can lead to infinite loop
+2) doubke hashing:*/
+
 func Put(key int, value string) {
 	hashCode := getHashCode(key)
 	existingEntry := &hashMapList[hashCode]
