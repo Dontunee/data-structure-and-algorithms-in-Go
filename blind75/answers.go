@@ -57,8 +57,8 @@ func MaxProfit(prices []int) int {
 		} else {
 			difference := prices[rightPointer] - prices[leftPointer]
 			currentMaximum = int(math.Max(float64(difference), float64(currentMaximum)))
+			rightPointer++
 		}
-		rightPointer++
 	}
 
 	return currentMaximum

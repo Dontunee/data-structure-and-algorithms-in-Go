@@ -9,7 +9,7 @@ import (
 )
 
 func main() {
-	blind75.TwoSum([]int{2, 7, 11, 15}, 9)
+	blind75.MaxProfit([]int{2, 1, 2, 1, 0, 1, 2})
 }
 
 func plusOne(digits []int) []int {
