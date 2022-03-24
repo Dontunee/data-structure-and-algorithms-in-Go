@@ -64,3 +64,27 @@ func MaxProfit(prices []int) int {
 	return currentMaximum
 
 }
+
+func ContainsDuplicate(nums []int) bool {
+	//loop through
+	//if any element exist before
+	//return true
+	//else
+	//add to the dicti0nary
+
+	length := len(nums)
+
+	if length < 1 || length > int(math.Pow(10, 5)) {
+		return false
+	}
+
+	dictionary := make(map[int]int, 0)
+	for _, value := range nums {
+		if _, ok := dictionary[value]; ok {
+			return true
+		}
+		dictionary[value]++
+	}
+
+	return false
+}
