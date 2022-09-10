@@ -27,12 +27,12 @@ func TestFactorial(t *testing.T) {
 		{
 			"simple test case",
 			args{5},
-			120,
+			5,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := Factorial(tt.args.n); got != tt.want {
+			if got := TabulationFibonacci(tt.args.n); got != tt.want {
 				t.Errorf("Factorial() = %v, want %v", got, tt.want)
 			}
 		})
