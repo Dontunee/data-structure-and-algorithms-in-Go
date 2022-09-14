@@ -23,3 +23,32 @@ func buildFromBack(str string) bool {
 
 	return false
 }
+
+// O(n) time complexity and O(n) space complexity
+func recursive(str string, i, j int) bool {
+	//base case
+	if i >= j {
+		return true
+	}
+
+	//General case
+	if str[i] != str[j] {
+		return false
+	}
+
+	return recursive(str, i+1, j-1)
+}
+
+// O(n) time complexity and O(1) space complexity
+func pointer(str string) bool {
+	// Write your code here.
+	j := len(str) - 1
+	for i := 0; i < len(str); i++ {
+		if str[i] != str[j] {
+			return false
+		}
+		j--
+	}
+
+	return true
+}
