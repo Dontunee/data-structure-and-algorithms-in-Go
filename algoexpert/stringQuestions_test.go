@@ -28,3 +28,33 @@ func TestIsPalindrome(t *testing.T) {
 		})
 	}
 }
+
+func TestCaesarCipherEncryptor(t *testing.T) {
+	type args struct {
+		str string
+		key int
+	}
+
+	tests := []struct {
+		name  string
+		input args
+		want  string
+	}{
+		{
+			name: "test one",
+			input: args{
+				"abc",
+				0,
+			},
+			want: "abc",
+		},
+	}
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			if result := CaesarCipherEncryptor(test.input.str, test.input.key); result != test.want {
+				t.Error("invalid test ")
+			}
+		})
+	}
+}
