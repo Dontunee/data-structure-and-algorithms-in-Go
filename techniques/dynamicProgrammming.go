@@ -1,155 +1,162 @@
 package techniques
 
-func NSum(n int) int {
-	cache := make(map[int]int)
-	if cache[n] > 0 {
-		return cache[n]
+import (
+	"fmt"
+	"strings"
+)
+
+func fib(n int) int {
+	if n <= 2 {
+		return 1
 	}
-	result := -1
-	if n < 2 {
-		result = 1
-	} else {
-		result = NSum(n-1) + n
-		return result
-	}
-	cache[n] = result
-	return result
+
+	return fib(n-1) + fib(n-2)
 }
 
-func NonDPFactorial(n int) int {
-	if n < 2 {
-		return n
-	}
-	return NonDPFactorial(n-1) + NonDPFactorial(n-2)
+func FibMemo(n int) int {
+	return fibMemoization(n, make(map[int]int, n))
 }
 
-func MemoizationFactorial(n int) int {
-	memo := make([]int, n+1)
-	factorial := calculateMemoizationRecursive(memo, n)
-	return factorial
-}
-
-func calculateMemoizationRecursive(memo []int, n int) int {
-	if n < 2 {
-		return n
-	}
-
+func fibMemoization(n int, memo map[int]int) int {
 	if memo[n] != 0 {
 		return memo[n]
 	}
-	memo[n] = calculateMemoizationRecursive(memo, n-1) + calculateMemoizationRecursive(memo, n-2)
+
+	if n <= 2 {
+		return 1
+	}
+	memo[n] = fibMemoization(n-1, memo) + fibMemoization(n-2, memo)
 	return memo[n]
 }
 
-func TabulationFibonacci(n int) int {
-	if n == 0 {
-		return 0
-	}
-	fibArray := make([]int, n+1)
-	fibArray[0] = 0
-	fibArray[1] = 1
-
-	for i := 2; i <= n; i++ {
-		fibArray[i] = fibArray[i-1] + fibArray[i-2]
-	}
-	return fibArray[n]
+func GridTraveller(m int, n int) int {
+	var memo = make(map[string]int)
+	return gridTraveller(m, n, memo)
 }
 
-func BruteForceKnapsack(weights, profit []int, capacity int) int {
-	//store maximum capacity
-	//loop through weights
-	//for each weight
-	//check if current weight picked is higher than maxCap
-	//if it is update max cap
-	// then continue to add to each other weight
-	// if weight is less than or equal to cap
-	// add profits together
-	// compare addition to existing max cap
-	// update added figure
-	//return max cap
+func gridTraveller(m int, n int, memo map[string]int) int {
+	var key = fmt.Sprintf("%d,%d", m, n)
 
-	var maxCap int
-	// abcd
-	// 1,2,3,5
-	// 1,6,10,16
-	// c-> 7
-	for weightKey, weightValue := range weights {
-		if weightValue <= capacity {
-			if profit[weightKey] > maxCap {
-				maxCap = profit[weightKey]
-			}
+	if memo[key] != 0 {
+		return memo[key]
+	}
+	if m == 0 || n == 0 {
+		return 0
+	}
 
-			for i := 0; i < len(weights); i++ {
-				if i != weightKey {
-					currentWeight := weights[weightKey] + weights[i]
-					if currentWeight <= capacity {
-						currentProfit := profit[weightKey] + profit[i]
-						if currentProfit > maxCap {
-							maxCap = currentProfit
-						}
-					}
-				}
+	if m == 1 && n == 1 {
+		return 1
+	}
+
+	memo[key] = gridTraveller(m-1, n, memo) + gridTraveller(m, n-1, memo)
+	return memo[key]
+}
+
+func CanSum(targetSum int, numbers []int) bool {
+	return canSum(targetSum, numbers, make(map[int]bool))
+}
+
+func canSum(targetSum int, numbers []int, memo map[int]bool) bool {
+	value, ok := memo[targetSum]
+	if ok {
+		return value
+	}
+
+	if targetSum == 0 {
+		return true
+	}
+
+	if targetSum < 0 {
+		return false
+	}
+
+	for _, value := range numbers {
+		var remainder = targetSum - value
+		if canSum(remainder, numbers, memo) == true {
+			memo[targetSum] = true
+			return memo[targetSum]
+		}
+	}
+	memo[targetSum] = false
+	return memo[targetSum]
+}
+
+func HowSum(targetSum int, numbers []int) []int {
+	if targetSum == 0 {
+		return []int{}
+	}
+
+	if targetSum < 0 {
+		return nil
+	}
+
+	for _, value := range numbers {
+		var remainder = targetSum - value
+		response := HowSum(remainder, numbers)
+		if response != nil {
+			response = append(response, value)
+			return response
+		}
+	}
+
+	return nil
+}
+
+func CanConstruct(target string, words []string) bool {
+	if target == "" {
+		return true
+	}
+
+	for _, word := range words {
+		if strings.HasPrefix(target, word) {
+			remainder := target[len(word):]
+			if CanConstruct(remainder, words) == true {
+				return true
 			}
 		}
 	}
-	return maxCap
+	return false
 }
 
-func RecursionKnapsack(weights, profits []int, capacity int) int {
-	// abcd
-	// 1,2,3,5
-	// 1,6,10,16
-	// c-> 7
-	return recursionKnapsack(weights, profits, capacity, 0)
+func CountConstruct(target string, words []string) int {
+	if target == "" {
+		return 1
+	}
+
+	count := 0
+
+	for _, word := range words {
+		if strings.HasPrefix(target, word) {
+			var remainder = target[len(word):]
+			if CountConstruct(remainder, words) == 1 {
+				count++
+			}
+		}
+	}
+
+	return count
 }
 
-func recursionKnapsack(weights []int, profits []int, capacity, currentIndex int) int {
-	//base checks
-	if capacity <= 0 || currentIndex >= len(profits) {
-		return 0
-	}
-	profitOne := 0
-	// recursive call after choosing the element at the currentIndex
-	// if the weight of the element at currentIndex exceeds the capacity, we shouldn't process this
-	if weights[currentIndex] <= capacity {
-		profitOne = recursionKnapsack(weights, profits, capacity-weights[currentIndex], currentIndex+1)
+func AllConstruct(target string, wordBank []string) [][]string {
+	if target == "" {
+		return [][]string{{}} // Base case: return a slice containing an empty slice
 	}
 
-	// recursive call after excluding the element at the currentIndex
-	profitTwo := recursionKnapsack(weights, profits, capacity, currentIndex)
+	var result [][]string
 
-	return max(profitOne, profitTwo)
+	for _, word := range wordBank {
+		if strings.HasPrefix(target, word) {
+			suffix := target[len(word):]                 // Get the remainder of the target after removing the prefix word
+			suffixWays := AllConstruct(suffix, wordBank) // Recursively call AllConstruct on the suffix
 
-}
-
-func max(numberOne, numberTwo int) int {
-	if numberOne > numberTwo {
-		return numberOne
-	}
-	return numberTwo
-}
-
-func Knapsack2dProblem(items [][]int, capacity int) []interface{} {
-	return recursionSolution(items, capacity, 0, 0, []int{}, len(items))
-}
-
-func recursionSolution(items [][]int, capacity, i, currentValue int, indices []int, n int) []interface{} {
-	if capacity <= 0 || n <= 0 {
-		return []interface{}{currentValue, []int{}}
+			// Iterate over the ways to construct the suffix
+			for _, way := range suffixWays {
+				// Prepend the current word to each way
+				prependWordToWay := append([]string{word}, way...)
+				result = append(result, prependWordToWay) // Directly append to result
+			}
+		}
 	}
 
-	value := items[i][0]
-	weight := items[i][1]
-
-	exclude := []interface{}{0, []int{}}
-	if capacity > weight {
-		exclude = recursionSolution(items, capacity, i-1, currentValue, indices, n-1)
-	}
-
-	include := recursionSolution(items, capacity-weight, i-1, currentValue+value, indices, n-1)
-
-	if include[0].(int) >= exclude[0].(int) {
-		return []interface{}{include[0], include[1]}
-	}
-	return []interface{}{exclude[0], exclude[1]}
+	return result
 }

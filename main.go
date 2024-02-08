@@ -2,14 +2,14 @@ package main
 
 import (
 	"fmt"
-	"github.com/dontunee/algorithmInGo/blind75"
+	"github.com/dontunee/algorithmInGo/techniques"
 	"math"
 	"sort"
 	"strconv"
 )
 
 func main() {
-	blind75.MaxProfit([]int{2, 1, 2, 1, 0, 1, 2})
+	fmt.Println(techniques.AllConstruct("purple", []string{"purp", "p", "ur", "le", "purpl"}))
 }
 
 func plusOne(digits []int) []int {
@@ -196,4 +196,95 @@ func reverse(input []int, start int, end int) []int {
 		end--
 	}
 	return input
+}
+
+/*
+create a responseArray and insert the first item of the input array into it
+loop through from the second item to the last item in the input array
+for each one of the items , pick it , then loop through the response array
+compare it from the rightmost value
+if the value in your hand is higher than the value i am comparing against skip it and move to the left
+if it is higher , add it to the right of that value and move to the next value in the input array
+if it is not higher than any , insert it at the beginning of the response array
+then move to the next item in the input array
+{4, 3, 2, 1}
+{1,2,3,4}
+*/
+func insertionSort(inputArray []int) []int {
+	if len(inputArray) < 2 {
+		return inputArray
+	}
+
+	resp := make([]int, 1)
+	resp[0] = inputArray[0]
+
+	for i := 1; i < len(inputArray); i++ {
+		numberAtHand := inputArray[i]
+		j := len(resp) - 1
+
+		// Find the right spot for numberAtHand
+		for ; j >= 0 && resp[j] > numberAtHand; j-- {
+			// No action needed here; just iterating to find the spot
+		}
+
+		// Insert numberAtHand after the found spot
+		resp = append(resp, 0)       // Make room for the new element
+		copy(resp[j+2:], resp[j+1:]) // Shift elements to the right
+		resp[j+1] = numberAtHand     // Insert numberAtHand at the right spot
+	}
+
+	return resp
+}
+
+/*
+{1,2,5,9,10} 22
+{1,2,9,10}
+*/
+
+// Function to find a subset that sums up to the target
+func findSubsetSum(S []int, T int) ([]int, bool) {
+	n := len(S)
+	// DP table to check if sum j can be achieved with subset of first i items
+	dp := make([][]bool, n+1)
+	for i := range dp {
+		dp[i] = make([]bool, T+1)
+	}
+	dp[0][0] = true // Base case: sum 0 is always achievable
+
+	// Parent table to track the decisions
+	parent := make([][]int, n+1)
+	for i := range parent {
+		parent[i] = make([]int, T+1)
+		for j := range parent[i] {
+			parent[i][j] = -1 // Initialize parent table with -1
+		}
+	}
+
+	// Fill DP table and track decisions
+	for i := 1; i <= n; i++ {
+		for j := 0; j <= T; j++ {
+			if j >= S[i-1] && dp[i-1][j-S[i-1]] {
+				dp[i][j] = true
+				parent[i][j] = S[i-1] // Record the item contributing to this sum
+			} else {
+				dp[i][j] = dp[i-1][j]
+			}
+		}
+	}
+
+	// If there's no subset that sums up to T, return an empty slice and false
+	if !dp[n][T] {
+		return nil, false
+	}
+
+	// Reconstruct the subset
+	var subset []int
+	for i, j := n, T; j > 0 && i > 0; i-- {
+		if parent[i][j] != -1 {
+			subset = append([]int{parent[i][j]}, subset...) // Prepend to maintain order
+			j -= parent[i][j]
+		}
+	}
+
+	return subset, true
 }
